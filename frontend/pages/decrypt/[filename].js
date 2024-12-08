@@ -12,13 +12,10 @@ export default function DecryptFile() {
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
-        const response = await fetch(
-          `/api/check-session`,
-          {
-            method: "GET",
-            credentials: "include",
-          }
-        );
+        const response = await fetch(`/api/check-session`, {
+          method: "GET",
+          credentials: "include",
+        });
 
         if (response.ok) {
           setIsAuthenticated(true);
@@ -47,16 +44,13 @@ export default function DecryptFile() {
     };
 
     try {
-      const response = await fetch(
-        `/api/decrypt`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestBody),
-        }
-      );
+      const response = await fetch(`/api/decrypt`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
 
       if (response.ok) {
         const data = await response.json();
@@ -82,7 +76,8 @@ export default function DecryptFile() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
-      <Navbar isAuthenticated={isAuthenticated} /> {/* Pass authentication status to Navbar */}
+      <Navbar isAuthenticated={isAuthenticated} />{" "}
+      {/* Pass authentication status to Navbar */}
       <main className="flex flex-col items-center justify-center flex-grow mt-8">
         <form
           onSubmit={handleFileDecryption}
@@ -110,8 +105,7 @@ export default function DecryptFile() {
         {isDecrypted && (
           <a
             href={decryptedFilePath}
-            target="_blank"
-            rel="noopener noreferrer"
+            download
             className="mt-4 bg-green-500 text-black px-4 py-2 rounded"
           >
             Download
