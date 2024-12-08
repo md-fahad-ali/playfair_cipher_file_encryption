@@ -105,7 +105,8 @@ export default function DecryptFile() {
         {isDecrypted && (
           <a
             href={decryptedFilePath}
-            download
+            target="_blank"
+            rel="noopener noreferrer"
             className="mt-4 bg-green-500 text-black px-4 py-2 rounded"
           >
             Download

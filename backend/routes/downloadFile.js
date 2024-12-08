@@ -26,25 +26,25 @@ router.get("/:filename", (req, res) => {
   const readStream = fs.createReadStream(filePath);
   readStream.pipe(res);
 
-  readStream.on("close", () => {
-    // Delete files after sending
-    fs.unlink(filePath, (unlinkErr) => {
-      if (unlinkErr) {
-        console.error("Error deleting file from decrypt directory:", unlinkErr);
-      } else {
-        console.log("File deleted successfully from decrypt directory.");
-      }
-    });
+  // readStream.on("close", () => {
+  //   // Delete files after sending
+  //   fs.unlink(filePath, (unlinkErr) => {
+  //     if (unlinkErr) {
+  //       console.error("Error deleting file from decrypt directory:", unlinkErr);
+  //     } else {
+  //       console.log("File deleted successfully from decrypt directory.");
+  //     }
+  //   });
 
-    const uploadsFilePath = path.join(uploadsDir, filename);
-    fs.unlink(uploadsFilePath, (unlinkErr) => {
-      if (unlinkErr) {
-        console.error("Error deleting file from uploads directory:", unlinkErr);
-      } else {
-        console.log("File deleted successfully from uploads directory.");
-      }
-    });
-  });
+  //   const uploadsFilePath = path.join(uploadsDir, filename);
+  //   fs.unlink(uploadsFilePath, (unlinkErr) => {
+  //     if (unlinkErr) {
+  //       console.error("Error deleting file from uploads directory:", unlinkErr);
+  //     } else {
+  //       console.log("File deleted successfully from uploads directory.");
+  //     }
+  //   });
+  // });
 
   readStream.on("error", (err) => {
     console.error("Error reading file:", err);
