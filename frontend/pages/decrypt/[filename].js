@@ -119,12 +119,22 @@ export default function DecryptFile() {
           <div className="mt-4 text-center text-black">{decryptionMessage}</div>
         )}
         {isDecrypted && (
-          <button
-          onClick={handleDownload}
-          className="mt-4 bg-green-500 text-black px-4 py-2 rounded"
-        >
-          Download
-        </button>
+          <div className="flex gap-4">
+            <button
+              onClick={handleDownload}
+              className="bg-green-500 text-black px-4 py-2 rounded"
+            >
+              Download
+            </button>
+            
+            <a
+              href={decryptedFilePath}
+              className="bg-green-500 text-black px-4 py-2 rounded"
+            >
+              Download Decrypted File
+            </a>
+          </div>
+      
         )}
       </main>
     </div>
