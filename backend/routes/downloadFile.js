@@ -10,26 +10,24 @@ router.get("/:filename", (req, res) => {
   const { filename } = req.params;
 
   if (!filename) {
-    return res.status(400).send("Filename is required.");
+    return res.status(400).json({ error: "Filename is required." });
   }
 
   const filePath = path.join(decryptDir, filename);
-  console.log(filePath);
+
   if (!fs.existsSync(filePath)) {
-    return res.status(404).send("File not found.");
+    console.error("File not found:", filePath);
+    return res.status(404).json({ error: "File not found." });
   }
 
-  try {
-    if (!fs.existsSync(filePath)) {
-      return res.status(404).send("File not found.");
-    }
+  res.setHeader("Content-Disposition", `attachment; filename=${filename}`);
+  res.setHeader("Content-Type", "application/octet-stream");
 
-    const fileContent = fs.readFileSync(filePath);
-    res.setHeader("Content-Disposition", `attachment; filename=${filename}`);
-    res.setHeader("Content-Type", "application/octet-stream");
-    res.send(fileContent);
+  const readStream = fs.createReadStream(filePath);
+  readStream.pipe(res);
 
-    // Delete the file from the decrypt directory after sending
+  readStream.on("close", () => {
+    // Delete files after sending
     fs.unlink(filePath, (unlinkErr) => {
       if (unlinkErr) {
         console.error("Error deleting file from decrypt directory:", unlinkErr);
@@ -38,7 +36,6 @@ router.get("/:filename", (req, res) => {
       }
     });
 
-    // Delete the file from the uploads directory
     const uploadsFilePath = path.join(uploadsDir, filename);
     fs.unlink(uploadsFilePath, (unlinkErr) => {
       if (unlinkErr) {
@@ -47,10 +44,12 @@ router.get("/:filename", (req, res) => {
         console.log("File deleted successfully from uploads directory.");
       }
     });
-  } catch (error) {
-    console.error("Error accessing file:", error);
-    return res.status(500).send("Error accessing file.");
-  }
+  });
+
+  readStream.on("error", (err) => {
+    console.error("Error reading file:", err);
+    return res.status(500).json({ error: "Error reading file." });
+  });
 });
 
 module.exports = router;
