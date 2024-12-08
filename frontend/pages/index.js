@@ -43,7 +43,7 @@ export default function Home() {
     formData.append("key", keyword);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/upload`,
+        `/api/upload`,
         {
           method: "POST",
           body: formData,
