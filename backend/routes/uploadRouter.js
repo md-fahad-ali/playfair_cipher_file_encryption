@@ -70,9 +70,7 @@ router.post("/", (req, res) => {
 
       await newUser.save();
 
-      const downloadUrl = `${req.protocol}://${req.get("host")}/api/upload/${
-        req.file.filename
-      }`;
+      const downloadUrl = `${process.env.BASE_URL}/api/upload/${req.file.filename}`;
 
       res.status(200).send({
         message: "File uploaded and encrypted successfully!",
@@ -87,20 +85,23 @@ router.post("/", (req, res) => {
   });
 });
 
-router.get("/:filename", (req, res) => {
+router.get("/:filename", async (req, res) => {
   const filename = req.params.filename;
   const filePath = path.join(uploadDir, filename);
 
-  if (!fs.existsSync(filePath)) {
-    return res.status(404).send("File not found.");
-  }
-
-  res.download(filePath, (err) => {
-    if (err) {
-      console.error("Error downloading file:", err);
-      return res.status(500).send("Error downloading file.");
+  try {
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).send("File not found.");
     }
-  });
+
+    const fileContent = fs.readFileSync(filePath);
+    res.setHeader("Content-Disposition", `attachment; filename=${filename}`);
+    res.setHeader("Content-Type", "application/octet-stream");
+    res.send(fileContent);
+  } catch (error) {
+    console.error("Error accessing file:", error);
+    return res.status(500).send("Error accessing file.");
+  }
 });
 
 module.exports = router;
