@@ -1,14 +1,18 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import Navbar from "../components/Navbar"; // Import Navbar component
+import Navbar from "../components/Navbar"; 
+import axios from "axios";
+import FileSaver from "file-saver";
 
 export default function DecryptFile() {
   const router = useRouter();
   const [decryptionMessage, setDecryptionMessage] = useState("");
   const [decryptedFilePath, setDecryptedFilePath] = useState("");
-  const [isDecrypted, setIsDecrypted] = useState(false); // New state to track decryption success
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // State to track authentication status
+  const [isDecrypted, setIsDecrypted] = useState(false); 
+  const [isAuthenticated, setIsAuthenticated] = useState(false); 
 
+  
+  
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
@@ -74,6 +78,18 @@ export default function DecryptFile() {
     }
   };
 
+  const handleDownload = async () => {
+    try {
+      const response = await axios.get(decryptedFilePath, {
+        responseType: "blob", 
+      });
+      const blob = new Blob([response.data], { type: response.headers["content-type"] });
+      FileSaver.saveAs(blob, router.query.filename); 
+    } catch (error) {
+      console.error("Error downloading file:", error);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       <Navbar isAuthenticated={isAuthenticated} />{" "}
@@ -103,14 +119,12 @@ export default function DecryptFile() {
           <div className="mt-4 text-center text-black">{decryptionMessage}</div>
         )}
         {isDecrypted && (
-          <a
-            href={decryptedFilePath}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-4 bg-green-500 text-black px-4 py-2 rounded"
-          >
-            Download
-          </a>
+          <button
+          onClick={handleDownload}
+          className="mt-4 bg-green-500 text-black px-4 py-2 rounded"
+        >
+          Download
+        </button>
         )}
       </main>
     </div>
