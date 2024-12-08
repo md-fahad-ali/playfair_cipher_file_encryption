@@ -14,7 +14,7 @@ const Signup = () => {
   const handleSignup = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/accounts/signup`,
+        `/api/accounts/signup`,
         {
           method: "POST",
           headers: {

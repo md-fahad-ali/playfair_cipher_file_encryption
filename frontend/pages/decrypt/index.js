@@ -13,7 +13,7 @@ export default function Decrypt() {
     const checkSession = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/check-session`,
+          `/api/check-session`,
           {
             method: "GET",
             credentials: "include",
