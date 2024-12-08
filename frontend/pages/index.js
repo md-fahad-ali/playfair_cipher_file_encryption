@@ -1,7 +1,9 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import Link from "next/link"; // Import Link from next/link
+import Head from "next/head"; // Import Head from next/head
 import Navbar from "./components/Navbar";
+
 export default function Home() {
   const router = useRouter();
   const [showShareableLinkButton, setShowShareableLinkButton] = useState(false);
@@ -9,16 +11,14 @@ export default function Home() {
   const [fileName, setFileName] = useState("");
   const [downloadLink, setDownloadLink] = useState(""); // State to store download link
   const [isAuthenticated, setIsAuthenticated] = useState(false); // State to track authentication status
+
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const response = await fetch(
-          `/api/check-session`,
-          {
-            method: "GET",
-            credentials: "include",
-          }
-        );
+        const response = await fetch(`/api/check-session`, {
+          method: "GET",
+          credentials: "include",
+        });
         if (response.ok) {
           setIsAuthenticated(true); // Set authentication status to true
         } else {
@@ -33,6 +33,7 @@ export default function Home() {
     };
     checkSession();
   }, [router]);
+
   const handleFileUpload = async (event) => {
     event.preventDefault();
     const file = event.target.file.files[0];
@@ -42,13 +43,10 @@ export default function Home() {
     formData.append("file", file);
     formData.append("key", keyword);
     try {
-      const response = await fetch(
-        `/api/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+      const response = await fetch(`/api/upload`, {
+        method: "POST",
+        body: formData,
+      });
       if (response.ok) {
         const data = await response.json();
         console.log(data);
@@ -68,65 +66,75 @@ export default function Home() {
       setUploadMessage("Error uploading file");
     }
   };
+
   const handleLogout = () => {
     console.log("Logged out");
     router.push("/accounts/login");
   };
+
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100">
-      <Navbar handleLogout={handleLogout} isAuthenticated={isAuthenticated} />{" "}
-      {/* Pass authentication status to Navbar */}
-      <main className="flex flex-col items-center justify-center flex-grow mt-8">
-        <form
-          onSubmit={handleFileUpload}
-          className="bg-white p-8 rounded-lg shadow-lg"
-        >
-          <h2 className="text-2xl font-bold mb-6 text-center text-black">
-            Upload File
-          </h2>
-          <input
-            type="file"
-            name="file"
-            className="mb-4 w-full border p-2 rounded text-black"
-          />
-          <input
-            type="text"
-            name="key"
-            placeholder="Enter keyword"
-            className="mb-4 w-full border p-2 rounded text-black"
-          />
-          <button
-            type="submit"
-            className="bg-blue-500 text-black px-4 py-2 rounded w-full"
+    <>
+      <Head>
+        <title>PlayCipher</title>
+      </Head>
+      <div className="min-h-screen flex flex-col bg-gray-100">
+        <Navbar handleLogout={handleLogout} isAuthenticated={isAuthenticated} />{" "}
+        {/* Pass authentication status to Navbar */}
+        <main className="flex flex-col items-center justify-center flex-grow mt-8">
+          <form
+            onSubmit={handleFileUpload}
+            className="bg-white p-8 rounded-lg shadow-lg"
           >
-            Upload
-          </button>
-        </form>
-        {uploadMessage && (
-          <div className="mt-4 text-center text-black">{uploadMessage}</div>
-        )}
-        {showShareableLinkButton && (
-          <>
+            <h2 className="text-2xl font-bold mb-6 text-center text-black">
+              Upload File
+            </h2>
+            <input
+              type="file"
+              name="file"
+              className="mb-4 w-full border p-2 rounded text-black"
+            />
+            <input
+              type="text"
+              name="key"
+              placeholder="Enter keyword"
+              className="mb-4 w-full border p-2 rounded text-black"
+            />
             <button
-              className="bg-green-500 text-black px-4 py-2 rounded mt-4"
-              onClick={() => router.push(`/decrypt/${fileName}`)}
+              type="submit"
+              className="bg-blue-500 text-black px-4 py-2 rounded w-full"
             >
-              Create Shareable Link
+              Upload
             </button>
-            <a
-              href={downloadLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-blue-500 text-black px-4 py-2 rounded mt-4"
-            >
-              Download File
-            </a>
-          </>
-        )}
-        <Link href="/decrypt" className="mt-4 bg-purple-500 text-white px-4 py-2 rounded">
-          Decrypt data manually
-        </Link>
-      </main>
-    </div>
+          </form>
+          {uploadMessage && (
+            <div className="mt-4 text-center text-black">{uploadMessage}</div>
+          )}
+          {showShareableLinkButton && (
+            <>
+              <button
+                className="bg-green-500 text-black px-4 py-2 rounded mt-4"
+                onClick={() => router.push(`/decrypt/${fileName}`)}
+              >
+                Create Shareable Link
+              </button>
+              <a
+                href={downloadLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-blue-500 text-black px-4 py-2 rounded mt-4"
+              >
+                Download File
+              </a>
+            </>
+          )}
+          <Link
+            href="/decrypt"
+            className="mt-4 bg-purple-500 text-white px-4 py-2 rounded"
+          >
+            Decrypt data manually
+          </Link>
+        </main>
+      </div>
+    </>
   );
 }

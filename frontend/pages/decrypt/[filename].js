@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
+import Head from "next/head"; // Import Head from next/head
 import Navbar from "../components/Navbar"; 
 import axios from "axios";
 import FileSaver from "file-saver";
@@ -11,8 +12,6 @@ export default function DecryptFile() {
   const [isDecrypted, setIsDecrypted] = useState(false); 
   const [isAuthenticated, setIsAuthenticated] = useState(false); 
 
-  
-  
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
@@ -91,52 +90,57 @@ export default function DecryptFile() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100">
-      <Navbar isAuthenticated={isAuthenticated} />{" "}
-      {/* Pass authentication status to Navbar */}
-      <main className="flex flex-col items-center justify-center flex-grow mt-8">
-        <form
-          onSubmit={handleFileDecryption}
-          className="bg-white p-8 rounded-lg shadow-lg"
-        >
-          <h2 className="text-2xl font-bold mb-6 text-center text-black">
-            Decrypt File: {router.query.filename}
-          </h2>
-          <input
-            type="text"
-            name="key"
-            placeholder="Enter keyword"
-            className="mb-4 w-full border p-2 rounded text-black"
-          />
-          <button
-            type="submit"
-            className="bg-blue-500 text-black px-4 py-2 rounded w-full"
+    <>
+      <Head>
+        <title>Playfair Cipher Decrypt</title>
+      </Head>
+      <div className="min-h-screen flex flex-col bg-gray-100">
+        <Navbar isAuthenticated={isAuthenticated} />{" "}
+        {/* Pass authentication status to Navbar */}
+        <main className="flex flex-col items-center justify-center flex-grow mt-8">
+          <form
+            onSubmit={handleFileDecryption}
+            className="bg-white p-8 rounded-lg shadow-lg"
           >
-            Decrypt
-          </button>
-        </form>
-        {decryptionMessage && (
-          <div className="mt-4 text-center text-black">{decryptionMessage}</div>
-        )}
-        {isDecrypted && (
-          <div className="flex gap-4">
+            <h2 className="text-2xl font-bold mb-6 text-center text-black">
+              Decrypt File: {router.query.filename}
+            </h2>
+            <input
+              type="text"
+              name="key"
+              placeholder="Enter keyword"
+              className="mb-4 w-full border p-2 rounded text-black"
+            />
             <button
-              onClick={handleDownload}
-              className="bg-green-500 text-black px-4 py-2 rounded"
+              type="submit"
+              className="bg-blue-500 text-black px-4 py-2 rounded w-full"
             >
-              Download
+              Decrypt
             </button>
-            
-            <a
-              href={decryptedFilePath}
-              className="bg-green-500 text-black px-4 py-2 rounded"
-            >
-              Download Decrypted File
-            </a>
-          </div>
-      
-        )}
-      </main>
-    </div>
+          </form>
+          {decryptionMessage && (
+            <div className="mt-4 text-center text-black">{decryptionMessage}</div>
+          )}
+          {isDecrypted && (
+            <div className="flex gap-4">
+              <button
+                onClick={handleDownload}
+                className="bg-green-500 text-black px-4 py-2 rounded"
+              >
+                Download
+              </button>
+              
+              <a
+                href={decryptedFilePath}
+                className="bg-green-500 text-black px-4 py-2 rounded"
+              >
+                Download Decrypted File
+              </a>
+            </div>
+        
+          )}
+        </main>
+      </div>
+    </>
   );
 }
