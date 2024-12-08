@@ -48,7 +48,7 @@ export default function DecryptFile() {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/decrypt`,
+        `/api/decrypt`,
         {
           method: "POST",
           headers: {
