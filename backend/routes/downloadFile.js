@@ -19,13 +19,17 @@ router.get("/:filename", (req, res) => {
     return res.status(404).send("File not found.");
   }
 
-  res.download(filePath, (err) => {
-    if (err) {
-      console.error("Error downloading file:", err);
-      return res.status(500).send("Error downloading file.");
+  try {
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).send("File not found.");
     }
 
-    // Delete the file from the decrypt directory after download
+    const fileContent = fs.readFileSync(filePath);
+    res.setHeader("Content-Disposition", `attachment; filename=${filename}`);
+    res.setHeader("Content-Type", "application/octet-stream");
+    res.send(fileContent);
+
+    // Delete the file from the decrypt directory after sending
     fs.unlink(filePath, (unlinkErr) => {
       if (unlinkErr) {
         console.error("Error deleting file from decrypt directory:", unlinkErr);
@@ -43,7 +47,10 @@ router.get("/:filename", (req, res) => {
         console.log("File deleted successfully from uploads directory.");
       }
     });
-  });
+  } catch (error) {
+    console.error("Error accessing file:", error);
+    return res.status(500).send("Error accessing file.");
+  }
 });
 
 module.exports = router;

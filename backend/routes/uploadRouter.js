@@ -70,7 +70,7 @@ router.post("/", (req, res) => {
 
       await newUser.save();
 
-      const downloadUrl = `${process.env.BASE_URL}/api/upload/${req.file.filename}`;
+    const downloadUrl = `${process.env.BASE_URL}/api/upload/${req.file.filename}`;
 
       res.status(200).send({
         message: "File uploaded and encrypted successfully!",

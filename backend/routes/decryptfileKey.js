@@ -72,9 +72,7 @@ router.post("/", (req, res) => {
 
       res.status(200).send({
         message: "File decrypted successfully!",
-        downloadLink: `${req.protocol}://${req.get("host")}/api/downloads/${
-          file.filename
-        }`,
+        downloadLink: `${process.env.BASE_URL}/api/downloads/${file.filename}`,
       });
     } catch (decryptionError) {
       console.error("Decryption error:", decryptionError);
