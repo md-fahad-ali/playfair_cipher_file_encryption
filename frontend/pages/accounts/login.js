@@ -9,6 +9,20 @@ const Login = () => {
   const [loginError, setLoginError] = useState(null);
   const router = useRouter();
 
+  useEffect(() => {
+    const checkSession = async () => {
+        try {
+            const response = await fetch("https://playfair-cipher-0t9w.onrender.com/api", { credentials: "include" });
+
+        } catch (error) {
+            console.error("Error checking session:", error);
+        }
+    };
+
+    
+    checkSession();
+}, []); 
+
   const handleLogin = async () => {
     try {
       const response = await fetch(
