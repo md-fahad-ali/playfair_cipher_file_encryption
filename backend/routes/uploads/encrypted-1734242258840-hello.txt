@@ -1,1 +1,0 @@
-{"encrypted":"NXYMLPOWMQYGHELGXY","nonAlphaMap":[{"char":" ","index":2},{"char":" ","index":7},{"char":" ","index":10},{"char":"\n","index":16}]}
