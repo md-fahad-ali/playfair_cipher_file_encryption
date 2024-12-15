@@ -16,6 +16,17 @@ function createPlayfairMatrix(key) {
     }
   }
 
+  // Reshape the matrix into a 5x5 grid
+  matrix = matrix.reduce((acc, _, index) => {
+    const rowIndex = Math.floor(index / 5);
+    if (!acc[rowIndex]) {
+      acc[rowIndex] = [];
+    }
+    acc[rowIndex].push(_);
+    return acc;
+  }, []);
+
+  console.log(matrix);
   return matrix;
 }
 
@@ -38,11 +49,14 @@ function prepareTextForEncryption(text) {
 }
 
 function findPosition(matrix, char) {
-  const index = matrix.indexOf(char);
-  if (index === -1) {
-    throw new Error(`Character ${char} not found in matrix`);
+  for (let i = 0; i < matrix.length; i++) {
+    for (let j = 0; j < matrix[i].length; j++) {
+      if (matrix[i][j] === char) {
+        return [i, j];
+      }
+    }
   }
-  return [Math.floor(index / 5), index % 5];
+  throw new Error(`Character ${char} not found in matrix`);
 }
 
 function encryptPlayfair(matrix, text) {
@@ -55,18 +69,25 @@ function encryptPlayfair(matrix, text) {
     const [row1, col1] = findPosition(matrix, char1);
     const [row2, col2] = findPosition(matrix, char2);
 
+    let encryptedChars;
     if (row1 === row2) {
-      encryptedText += matrix[row1 * 5 + ((col1 + 1) % 5)];
-      encryptedText += matrix[row2 * 5 + ((col2 + 1) % 5)];
+      encryptedChars = [
+        matrix[row1][(col1 + 1) % 5],
+        matrix[row2][(col2 + 1) % 5],
+      ]; // Same row
     } else if (col1 === col2) {
-      encryptedText += matrix[((row1 + 1) % 5) * 5 + col1];
-      encryptedText += matrix[((row2 + 1) % 5) * 5 + col2];
+      encryptedChars = [
+        matrix[(row1 + 1) % 5][col1],
+        matrix[(row2 + 1) % 5][col2],
+      ]; // Same column
     } else {
-      encryptedText += matrix[row1 * 5 + col2];
-      encryptedText += matrix[row2 * 5 + col1];
+      encryptedChars = [matrix[row1][col2], matrix[row2][col1]]; // Rectangle swap
     }
+
+    encryptedText += encryptedChars.join("");
   }
 
+  console.log(encryptedText);
   return encryptedText;
 }
 
@@ -81,14 +102,14 @@ function decryptPlayfair(matrix, text) {
     const [row2, col2] = findPosition(matrix, char2);
 
     if (row1 === row2) {
-      decryptedText += matrix[row1 * 5 + ((col1 - 1 + 5) % 5)];
-      decryptedText += matrix[row2 * 5 + ((col2 - 1 + 5) % 5)];
+      decryptedText += matrix[row1][((col1 - 1 + 5) % 5)];
+      decryptedText += matrix[row2][((col2 - 1 + 5) % 5)];
     } else if (col1 === col2) {
-      decryptedText += matrix[((row1 - 1 + 5) % 5) * 5 + col1];
-      decryptedText += matrix[((row2 - 1 + 5) % 5) * 5 + col2];
+      decryptedText += matrix[((row1 - 1 + 5) % 5)][col1];
+      decryptedText += matrix[((row2 - 1 + 5) % 5)][col2];
     } else {
-      decryptedText += matrix[row1 * 5 + col2];
-      decryptedText += matrix[row2 * 5 + col1];
+      decryptedText += matrix[row1][col2];
+      decryptedText += matrix[row2][col1];
     }
   }
 

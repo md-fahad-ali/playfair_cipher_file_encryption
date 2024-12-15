@@ -41,6 +41,7 @@ function generateKeyMatrix(keyword) {
     }
   
     if (row1 === row2) {
+      console.log(matrix,matrix[row1])
       return [matrix[row1][(col1 + 1) % 5], matrix[row2][(col2 + 1) % 5]]; // Same row
     } else if (col1 === col2) {
       return [matrix[(row1 + 1) % 5][col1], matrix[(row2 + 1) % 5][col2]]; // Same column
@@ -78,7 +79,7 @@ function findDigraphs(text) {
 const data = "PLAYFAIR";
 const final = generateKeyMatrix(data);
 
-const reader = fs.createReadStream("example.txt");
+const reader = fs.createReadStream("hello.txt");
 let encryptedText = ""; // Buffer to store the chunks of data
 
 // Collect chunks of data
