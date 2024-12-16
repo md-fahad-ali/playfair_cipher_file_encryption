@@ -49,7 +49,7 @@ router.use(passport.initialize());
 router.use(passport.session());
 
 // Routes
-router.post("/login", (req, res, next) => {
+router.post("/", (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) {
       return res

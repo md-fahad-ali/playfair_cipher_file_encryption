@@ -47,7 +47,7 @@ router.use(passport.initialize());
 router.use(passport.session());
 
 // Signup route
-router.post('/signup', async (req, res) => {
+router.post('/', async (req, res) => {
   const { firstName, lastName, email, username, password } = req.body;
 
   try {

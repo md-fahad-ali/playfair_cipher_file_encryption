@@ -50,7 +50,8 @@ const uploadRouter = require("./routes/uploadRouter");
 // Use routes
 app.use("/api", myRouter);
 app.use("/api/upload", uploadRouter); // Corrected to specify the path for uploadRouter
-app.use("/api/accounts", accountsRouter);
+app.use("/api/accounts/login", accountsRouter);
+app.use("/api/accounts/signup", signupRouter);
 app.use("/accounts/logout", logoutRouter); // Use logout route
 app.use("/api/decrypt", decryptRouter); // Corrected to specify the path for decryptRouter
 app.use("/api/decryptfile", decryptfileKey); // Corrected to specify the path for decryptRouter
